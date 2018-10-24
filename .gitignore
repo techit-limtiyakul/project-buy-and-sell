@@ -1,1 +1,3 @@
 BnS/
+*.pyc
+UCSDBuyAndSell/db.sqlite3
