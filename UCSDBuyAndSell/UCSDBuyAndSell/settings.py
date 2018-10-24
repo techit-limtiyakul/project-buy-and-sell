@@ -25,7 +25,7 @@ SECRET_KEY = 'r#)pdysojr!xc=&%gncz7bc8-n78zrrkvpxaq@qu%oxp-r=$gy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["ucsdbuyandsell.pythonanywhere.com"]
+ALLOWED_HOSTS = ["ucsdbuyandsell.pythonanywhere.com", "127.0.0.1"]
 
 
 # Application definition
