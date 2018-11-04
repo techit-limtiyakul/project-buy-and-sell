@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ Title }}</h1>
+<p><b>{{ Seller }}:</b> RATINGS TODO</p>
+<p>${{ Price }}</p>
+{% if CanDeliver %}
+	<p><b>Can Deliver: Yes</b></p>
+{% else %}
+	<p><b>Can Deliver: No</b></p>
+{% endif %}
+<p><b>Condition: {{ Condition }}</b></p>
+<p>{{ Description }}</p>
+<p><b>Contact Information:</b> {{ ContactInformation }}</p>
+{% endblock %}

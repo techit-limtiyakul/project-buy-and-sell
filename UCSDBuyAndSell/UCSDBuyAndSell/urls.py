@@ -19,6 +19,8 @@ from django.urls import path
 from UCSDMarket import views as UCSDMarket
 
 urlpatterns = [
-	url(r'^$', UCSDMarket.Home),
-    path('admin/', admin.site.urls),
+	url(r'^$', UCSDMarket.Home, name="Home"),
+	url(r'^market/listing/$', UCSDMarket.Listing, name="Listing"),
+	url(r'^market/my_listings/$', UCSDMarket.MyListings, name="MyListings"),
+	path('admin/', admin.site.urls),
 ]
