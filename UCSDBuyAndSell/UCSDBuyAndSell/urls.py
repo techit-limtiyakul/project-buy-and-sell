@@ -15,12 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views
 from django.urls import path
 from UCSDMarket import views as UCSDMarket
+from UCSDMarket.forms import LoginForm
 
 urlpatterns = [
 	url(r'^$', UCSDMarket.Home, name="Home"),
 	url(r'^market/listing/$', UCSDMarket.Listing, name="Listing"),
 	url(r'^market/my_listings/$', UCSDMarket.MyListings, name="MyListings"),
+    url(r'^market/login/$', views.login,{'authentication_form':LoginForm}, name="Login"),
 	path('admin/', admin.site.urls),
 ]
