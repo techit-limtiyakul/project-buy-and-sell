@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from UCSDMarket.forms import SignupForm
+from UCSDMarket.forms import SignupForm, ImageUploadForm
+from UCSDMarket.models import Picture
 
 # Create your views here.
 def Home(request):
@@ -17,6 +18,16 @@ def Signoff(request):
 	return response
 
 def Listing(request):
+	if request.method == 'POST':
+		form = ImageUploadForm(request.POST, request.FILES)
+		if form.is_valid():
+			m = Picture(picture=request.FILES['image'])
+			m.save()
+	else:
+		form = ImageUploadForm();
+	
+	all_entries = Picture.objects.all()
+	#all_entries[:1].get().delete()
 	
 	context = {
 		"Title" : "IKEA full size bed",
@@ -25,8 +36,13 @@ def Listing(request):
 		"CanDeliver" : True,
 		"Condition" : "Used",
 		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-		"ContactInformation" : "858 - 888 - 8888"
-	} #
+		"ContactInformation" : "858 - 888 - 8888",
+		"form" : form,
+		"pictures": all_entries
+	}
+	
+	#print(all_entries[:1].get())
+	
 	return render(request, "UCSDMarket/listing.html", context)
 
 def MyListings(request):

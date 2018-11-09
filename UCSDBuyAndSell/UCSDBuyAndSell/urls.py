@@ -15,6 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+
+# For image serving
+from django.conf import settings
+from django.views.static import serve
+
 from django.contrib.auth import views
 from django.urls import path
 from UCSDMarket import views as UCSDMarket
@@ -29,3 +34,11 @@ urlpatterns = [
     url(r'^market/signoff/$', UCSDMarket.Signoff, name="Signoff"),
 	path('admin/', admin.site.urls),
 ]
+
+#This storage method will need to be changed on python anywhere
+if settings.DEBUG:
+	urlpatterns += [
+		url(r'^media/(?P<path>.*)$', serve, {
+			'document_root': settings.MEDIA_ROOT,
+		}),
+		]

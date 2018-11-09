@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+<form action="{% url 'Listing' %}" method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
 <h1>{{ Title }}</h1>
 <p><b>{{ Seller }}:</b> RATINGS TODO</p>
 <p>${{ Price }}</p>
@@ -11,4 +16,9 @@
 <p><b>Condition: {{ Condition }}</b></p>
 <p>{{ Description }}</p>
 <p><b>Contact Information:</b> {{ ContactInformation }}</p>
+
+{% for pic in pictures %}
+	<img src="{{ pic.picture.url }}" />
+{% endfor %}
+
 {% endblock %}

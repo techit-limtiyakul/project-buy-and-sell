@@ -10,3 +10,6 @@ class SignupForm(UserCreationForm):
 	username=forms.CharField(label="Email", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'UCSD Email'}))
 	password1=forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'Password'}))
 	password2=forms.CharField(label="Retype Password", widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'Retype Password'}))
+
+class ImageUploadForm(forms.Form):
+	image = forms.ImageField()#forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
