@@ -18,16 +18,17 @@ def Signoff(request):
 	return response
 
 def Listing(request):
-	if request.method == 'POST':
-		form = ImageUploadForm(request.POST, request.FILES)
-		if form.is_valid():
-			m = Picture(picture=request.FILES['image'])
-			m.save()
-	else:
-		form = ImageUploadForm();
-	
 	all_entries = Picture.objects.all()
-	#all_entries[:1].get().delete()
+	
+	all_pictures = []
+	
+	imgCount = 0
+	for entry in all_entries:
+		imgCount = imgCount + 1
+		all_pictures.append({
+							"Image": entry,
+							"Number": imgCount
+							})
 	
 	context = {
 		"Title" : "IKEA full size bed",
@@ -35,19 +36,19 @@ def Listing(request):
 		"Price" : 50,
 		"CanDeliver" : True,
 		"Condition" : "Used",
-		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
+		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
 		"ContactInformation" : "858 - 888 - 8888",
-		"form" : form,
-		"pictures": all_entries
+		"Pictures": all_pictures
 	}
-	
-	#print(all_entries[:1].get())
 	
 	return render(request, "UCSDMarket/listing.html", context)
 
 def MyListings(request):
 	
 	Listings = []
+	
+	all_entries = Picture.objects.all()
+	thumbImg = all_entries[:1].get()
 	
 	Listings.append({
 		"Title" : "IKEA full size bed",
@@ -56,7 +57,8 @@ def MyListings(request):
 		"CanDeliver" : True,
 		"Condition" : "Used",
 		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-		"ContactInformation" : "858 - 888 - 8888"
+		"ContactInformation" : "858 - 888 - 8888",
+		"Thumbnail": thumbImg
 	})
 	
 	Listings.append({
@@ -66,7 +68,8 @@ def MyListings(request):
 		"CanDeliver" : False,
 		"Condition" : "New",
 		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-		"ContactInformation" : "858 - 888 - 8888"
+		"ContactInformation" : "858 - 888 - 8888",
+		"Thumbnail": thumbImg
 	})
 	
 	Listings.append({
@@ -76,7 +79,8 @@ def MyListings(request):
 		"CanDeliver" : True,
 		"Condition" : "Used",
 		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-		"ContactInformation" : "858 - 888 - 8888"
+		"ContactInformation" : "858 - 888 - 8888",
+		"Thumbnail": thumbImg
 	})
 	
 	context = {
