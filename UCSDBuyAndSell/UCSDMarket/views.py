@@ -1,10 +1,14 @@
 from django.shortcuts import render
+from UCSDMarket.forms import SignupForm
 
 # Create your views here.
 def Home(request):
     context = { } #
     return render(request, "UCSDMarket/home.html", context)
 
+def Signup(request):
+	form = SignupForm();
+	return render(request, 'UCSDMarket/signup.html', {'form': form})
 def Listing(request):
 	
 	context = {
