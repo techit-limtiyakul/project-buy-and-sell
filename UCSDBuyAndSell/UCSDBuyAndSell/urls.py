@@ -26,5 +26,6 @@ urlpatterns = [
 	url(r'^market/my_listings/$', UCSDMarket.MyListings, name="MyListings"),
     url(r'^market/login/$', views.login,{'authentication_form':LoginForm}, name="Login"),
     url(r'^market/signup/$', UCSDMarket.Signup, name="Signup"),
+    url(r'^market/signoff/$', UCSDMarket.Signoff, name="Signoff"),
 	path('admin/', admin.site.urls),
 ]

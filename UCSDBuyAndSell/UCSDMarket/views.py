@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from UCSDMarket.forms import SignupForm
 
 # Create your views here.
@@ -9,6 +10,12 @@ def Home(request):
 def Signup(request):
 	form = SignupForm();
 	return render(request, 'UCSDMarket/signup.html', {'form': form})
+
+def Signoff(request):
+	logout(request);
+	response = redirect('/market/login')
+	return response
+
 def Listing(request):
 	
 	context = {

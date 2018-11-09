@@ -32,8 +32,13 @@
         <a class="nav-link" href="{% url 'MyListings' %}">My Listings</a>
       </li>
     </ul>
+    {% if not request.user.is_authenticated %}
     <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'Login' %}">Login</a>
     <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'Signup' %}">Sign up</a>
+    {% else %}
+    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'Signoff' %}">Sign off</a>
+    {% endif %}
+
   </div>  
 </nav>
 	
