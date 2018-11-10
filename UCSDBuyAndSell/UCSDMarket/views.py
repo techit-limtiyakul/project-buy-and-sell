@@ -117,7 +117,7 @@ def SearchListings(request):
 	
 	context = {
 		"Title" : "Search and explore what you want!",
-		"Description" : "Please enter the information you would like to search."
+		"Description" : "Please enter the information you would like to search.", 
 		"Results" : "Here are the results."
 
 	} #
