@@ -29,72 +29,76 @@ def Signoff(request):
     return response
 
 def Listing(request):
-    all_entries = Picture.objects.all()
+	all_entries = Picture.objects.all()
 
-    all_pictures = []
+	all_pictures = []
 
-    imgCount = 0
-    for entry in all_entries:
-        imgCount = imgCount + 1
-        all_pictures.append({
-                            "Image": entry,
-                            "Number": imgCount
-                            })
+	imgCount = 0
+	for entry in all_entries:
+		imgCount = imgCount + 1
+		all_pictures.append({
+							"Image": entry,
+							"Number": imgCount
+							})
 
-    context = {
-        "Title" : "IKEA full size bed",
-        "Seller" : "John Doe",
-        "Price" : 50,
-        "CanDeliver" : True,
-        "Condition" : "Used",
-        "Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-        "ContactInformation" : "858 - 888 - 8888",
-        "Pictures": all_pictures
-    }
+	context = {
+		"Title" : "IKEA full size bed",
+		"Seller" : "John Doe",
+		"Price" : 50,
+		"CanDeliver" : True,
+		"Condition" : "Used",
+		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
+		"ContactInformation" : "858 - 888 - 8888",
+		"Pictures": all_pictures
+	}
 
-    return render(request, "UCSDMarket/listing.html", context)
+	return render(request, "UCSDMarket/listing.html", context)
 
 def MyListings(request):
 
-    Listings = []
+	if request.user.is_authenticated:
+		# Get listings from user
+		Listings = []
 
-    all_entries = Picture.objects.all()
-    thumbImg = all_entries[:1].get()
+		all_entries = Picture.objects.all()
+		thumbImg = all_entries[:1].get()
 
-    Listings.append({
-        "Title" : "IKEA full size bed",
-        "Seller" : "John Doe",
-        "Price" : 50,
-        "CanDeliver" : True,
-        "Condition" : "Used",
-        "Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-        "ContactInformation" : "858 - 888 - 8888",
-        "Thumbnail": thumbImg
-    })
+		Listings.append({
+			"Title" : "IKEA full size bed",
+			"Seller" : "John Doe",
+			"Price" : 50,
+			"CanDeliver" : True,
+			"Condition" : "Used",
+			"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
+			"ContactInformation" : "858 - 888 - 8888",
+			"Thumbnail": thumbImg
+		})
 
-    Listings.append({
-        "Title" : "King Sized Bed",
-        "Seller" : "Reggie Smiles",
-        "Price" : 150,
-        "CanDeliver" : False,
-        "Condition" : "New",
-        "Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-        "ContactInformation" : "858 - 888 - 8888",
-        "Thumbnail": thumbImg
-    })
+		Listings.append({
+			"Title" : "King Sized Bed",
+			"Seller" : "Reggie Smiles",
+			"Price" : 150,
+			"CanDeliver" : False,
+			"Condition" : "New",
+			"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
+			"ContactInformation" : "858 - 888 - 8888",
+			"Thumbnail": thumbImg
+		})
 
-    Listings.append({
-        "Title" : "Comfy Cot",
-        "Seller" : "John Doe",
-        "Price" : 30,
-        "CanDeliver" : True,
-        "Condition" : "Used",
-        "Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-        "ContactInformation" : "858 - 888 - 8888",
-        "Thumbnail": thumbImg
-    })
+		Listings.append({
+			"Title" : "Comfy Cot",
+			"Seller" : "John Doe",
+			"Price" : 30,
+			"CanDeliver" : True,
+			"Condition" : "Used",
+			"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
+			"ContactInformation" : "858 - 888 - 8888",
+			"Thumbnail": thumbImg
+		})
 
-    context = {
-        "Listings" : Listings,
-    } #
-    return render(request, "UCSDMarket/my_listings.html", context)
+		context = {
+			"Listings" : Listings,
+		} #
+		return render(request, "UCSDMarket/my_listings.html", context)
+	else:
+		return render(request, "UCSDMarket/home.html")
