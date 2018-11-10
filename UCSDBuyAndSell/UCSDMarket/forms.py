@@ -11,12 +11,8 @@ class SignupForm(UserCreationForm):
 	password1=forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'Password'}))
 	password2=forms.CharField(label="Retype Password", widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'Retype Password'}))
 
-<<<<<<< HEAD
 class CreateListingForm(forms.Form):
 	renewal_date = forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
 
-
-=======
->>>>>>> origin/master
 class ImageUploadForm(forms.Form):
 	image = forms.ImageField()#forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))

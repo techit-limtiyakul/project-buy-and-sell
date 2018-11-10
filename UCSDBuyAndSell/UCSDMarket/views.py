@@ -56,6 +56,10 @@ def Listing(request):
 
 def MyListings(request):
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 =======
 
 >>>>>>> origin/master
@@ -104,7 +108,6 @@ def MyListings(request):
 		} #
 		return render(request, "UCSDMarket/my_listings.html", context)
 	else:
-<<<<<<< HEAD
 		return render(request, "UCSDMarket/home.html")
 
 def CreateListings(request):
@@ -125,6 +128,4 @@ def SearchListings(request):
 
 	} #
 	return render(request, "UCSDMarket/search_listing.html", context)
-=======
-		return render(request, "UCSDMarket/home.html")
->>>>>>> origin/master
+
