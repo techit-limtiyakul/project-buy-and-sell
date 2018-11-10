@@ -14,6 +14,10 @@ div.ScrollableDiv {
 
 
 /* Style the Image Used to Trigger the Modal */
+body {
+    padding-top: 56px;
+}
+
 #myImg {
     border-radius: 5px;
     cursor: pointer;
