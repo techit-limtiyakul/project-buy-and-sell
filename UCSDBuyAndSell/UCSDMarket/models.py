@@ -13,14 +13,9 @@ class Listing(models.Model):
     
     def __str__ (self):
         return self.title
-    listingID = models.IntegerField()
+
     userID = models.IntegerField()
-    # 
-    # number in a database
     
-    # would the model give each listing a unique id?
-    
-    # maybe a foreignKey should be added to the model of image so that 
     title = models.CharField(max_length=50)
     seller = models.CharField(max_length=50)
     price = models.CharField(max_length=20)
