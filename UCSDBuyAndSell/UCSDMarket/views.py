@@ -55,7 +55,7 @@ def Listing(request):
 	return render(request, "UCSDMarket/listing.html", context)
 
 def MyListings(request):
-	
+
 	if request.user.is_authenticated:
 		# Get listings from user
 		Listings = []
@@ -118,6 +118,7 @@ def SearchListings(request):
 	context = {
 		"Title" : "Search and explore what you want!",
 		"Description" : "Please enter the information you would like to search."
+		"Results" : "Here are the results."
 
 	} #
 	return render(request, "UCSDMarket/search_listing.html", context)
