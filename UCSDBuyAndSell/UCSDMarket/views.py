@@ -110,6 +110,7 @@ def CreateListings(request):
 				if form.is_valid():
 					newListing = Listing(
 					userID = form.userID,
+					# TODO maybe the form should not have userID and it should come from somewhere else?
 					title = form.title,
 					seller = form.seller,
 					price = form.price,
@@ -118,13 +119,14 @@ def CreateListings(request):
 					description = form.description,
 					contactInformation = form.contactInformation)
 		
-					newListing.save()      # save the listing to the database
+					newListing.save()
                 
                 			# save uploaded picture to the database along with the id of the listing
 					for i in range(len(request.FILES['image'])):
 						m = Picture(ListingID = newListing.id, picture = request.FILES['image'][i])
 						m.save()
 				else:
+					pass
 					# form = CreateListingForm();
 					# TODO give error message: form is not valid
 	else:
