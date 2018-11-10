@@ -13,6 +13,17 @@ class SignupForm(UserCreationForm):
 
 class CreateListingForm(forms.Form):
 	renewal_date = forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
+	
+	# add the member of class CreateListingForm:
+	# same structure as the Listing in the database
+	userID = forms.IntegerField()
+	title = forms.CharField(max_length=50)
+	seller = forms.CharField(max_length=50)
+	price = forms.CharField(max_length=20)
+	canDeliver = forms.BooleanField()
+	condition = forms.CharField(max_length=10)
+	description = forms.CharField(max_length=500)
+	contactInformation = forms.CharField(max_length=20)
 
 class ImageUploadForm(forms.Form):
 	image = forms.ImageField()#forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
