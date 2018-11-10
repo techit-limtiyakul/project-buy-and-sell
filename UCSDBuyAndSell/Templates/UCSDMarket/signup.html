@@ -3,10 +3,10 @@
 <div class='text-center'>
 	<!-- TODO: put in css file -->
 	<form class="form-signin" method="POST" style="width:100%;max-width: 400px; padding: 15px; margin: auto">
-		<h1 class='h3 mb-3 font-weight-normal'>Sign in to UCSD Buy and Sell</h1>
+		<h1 class='h3 mb-3 font-weight-normal'>Sign up</h1>
 		{% csrf_token %}
 		{{form.as_p}}
-		<input type='submit' value='login'/>
+		<button type='submit'/>Sign up</button>
 	</form>
 </div>
 {% endblock %}

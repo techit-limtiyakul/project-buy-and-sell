@@ -1,16 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% for Listing in Listings %}
-	<h1>{{ Listing.Title }}</h1>
-	<p><b>{{ Listing.Seller }}:</b> RATINGS TODO</p>
-	<p>${{ Listing.Price }}</p>
-	{% if Listing.CanDeliver %}
-		<p><b>Can Deliver: Yes</b></p>
-	{% else %}
-		<p><b>Can Deliver: No</b></p>
-	{% endif %}
-	<p><b>Condition: {{ Listing.Condition }}</b></p>
-{% endfor %}
+<div class="ScrollableDiv">
+	<div class="container">
+		{% for Listing in Listings %}
+			<div class="row">
+				<div class="col-sm">
+					<img src="{{ Listing.Thumbnail.picture.url }}" width="200" height="200">
+				</div>
+				<div class="col-8">
+					<p><b>{{ Listing.Seller }}:</b> RATINGS TODO</p>
+					<p>${{ Listing.Price }}</p>
+					{% if Listing.CanDeliver %}
+						<p><b>Can Deliver: Yes</b></p>
+					{% else %}
+						<p><b>Can Deliver: No</b></p>
+					{% endif %}
+					<p><b>Condition: {{ Listing.Condition }}</b></p>
+				</div>
+				<div class="col-4">
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
 
 {% endblock %}

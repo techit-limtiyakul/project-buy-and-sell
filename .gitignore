@@ -1,3 +1,7 @@
 BnS/
 *.pyc
 UCSDBuyAndSell/db.sqlite3
+dj2/
+djangoenv/
+ENVIRONMENT_NAME/
+

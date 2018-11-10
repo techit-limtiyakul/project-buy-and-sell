@@ -2,6 +2,9 @@
 <html lang="en">
 	<head>
 	
+		{% load static %}
+		<link rel="stylesheet" type="text/css" href="{% static 'UCSDMarket/MarketStyle.css' %}">
+		
 		<title>UCSDBuyAndSell</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +18,7 @@
 		  background: #aaa;
 		}
 		</style>
+
 	</head>
 	
 	
@@ -31,9 +35,20 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'MyListings' %}">My Listings</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'CreateListings' %}">Create Listings</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'SearchListings' %}">Search</a>
+      </li>
     </ul>
+    {% if not request.user.is_authenticated %}
     <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'Login' %}">Login</a>
-    <div class="btn btn-outline-success my-2 my-sm-0">Sign up</div>
+    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'Signup' %}">Sign up</a>
+    {% else %}
+    <a class="btn btn-outline-success my-2 my-sm-0" href="{% url 'Signoff' %}">Sign off</a>
+    {% endif %}
+
   </div>  
 </nav>
 	
