@@ -1,0 +1,29 @@
+form>p {
+	width: 360px;
+	max-width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.form-signin {
+	width:450px;
+	max-width: 90vw; 
+	padding: 15px; 
+	margin: auto;
+}
+
+.form-signin.card {
+	display: block;
+}
+
+.errorlist {
+	text-align: left;
+}
+
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 40px;
+	min-height: 100vh;
+}
