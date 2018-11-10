@@ -28,7 +28,7 @@ def Signoff(request):
     response = redirect('/market/login')
     return response
 
-def Listing(request):
+def ListingPage(request):
 	all_entries = Picture.objects.all()
 
 	all_pictures = []
@@ -104,7 +104,33 @@ def MyListings(request):
 		return render(request, "UCSDMarket/home.html")
 
 def CreateListings(request):
-	
+	if request.user.is_authenticated:
+		if request.method == 'POST':
+			form = CreateListingForm(request.POST, request.FILES)
+				if form.is_valid():
+					newListing = Listing(
+					userID = form.userID,
+					title = form.title,
+					seller = form.seller,
+					price = form.price,
+					canDeliver = form.canDeliver,
+					condition = form.condition,
+					description = form.description,
+					contactInformation = form.contactInformation)
+		
+					newListing.save()      # save the listing to the database
+                
+                			# save uploaded picture to the database along with the id of the listing
+					for i in range(len(request.FILES['image'])):
+						m = Picture(ListingID = newListing.id, picture = request.FILES['image'][i])
+						m.save()
+				else:
+					# form = CreateListingForm();
+					# TODO give error message: form is not valid
+	else:
+		# TODO give error message: user not authenticated
+		pass
+
 	context = {
 		"Title" : "Create my listing here!",
 		"Description" : "Please fill out the following form to post your item."
