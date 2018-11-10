@@ -55,14 +55,7 @@ def Listing(request):
 	return render(request, "UCSDMarket/listing.html", context)
 
 def MyListings(request):
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
-=======
-
->>>>>>> origin/master
+	
 	if request.user.is_authenticated:
 		# Get listings from user
 		Listings = []
