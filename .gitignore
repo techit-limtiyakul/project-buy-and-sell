@@ -5,3 +5,5 @@ dj2/
 djangoenv/
 ENVIRONMENT_NAME/
 
+
+**/\.DS_Store
