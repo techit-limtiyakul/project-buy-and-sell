@@ -9,7 +9,6 @@ class Picture(models.Model):
 	picture = models.ImageField(upload_to = 'pictures/')
 	# listingKey = models.ForeignKey((...)
 	
-# added Listing model at 11/09/2018
 class Listing(models.Model):
     
     def __str__ (self):
