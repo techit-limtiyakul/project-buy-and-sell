@@ -14,9 +14,9 @@ class SignupForm(UserCreationForm):
 class CreateListingForm(forms.Form):
 	renewal_date = forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
 	
-	# add the member of class CreateListingForm:
 	# same structure as the Listing in the database
 	userID = forms.IntegerField()
+	# should userID provided by the form?
 	title = forms.CharField(max_length=50)
 	seller = forms.CharField(max_length=50)
 	price = forms.CharField(max_length=20)
