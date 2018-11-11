@@ -1,10 +1,46 @@
 {% extends "base.html" %}
+
+{% load static %}
+
+{% block custom-css %}
+<link href="{% static '/UCSDMarket/styles.css' %}" type='text/css' rel='stylesheet'>
+{% endblock %}
+
 {% block content %}
-<h1>{{ Title }}</h1>
+<h1 >{{ Title }}</h1>
 <p>{{ Description }}</p>
+<<<<<<< Updated upstream
 <form action="{% url 'CreateListings' %}" method="POST" enctype="multipart/form-data">
 	{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />
 </form>
+=======
+   <body>
+      
+      <form name = "form" action = "{% url "CreateListings" %}" 
+         method = "POST" >{% csrf_token %}
+         
+         <div style = "max-width:470px;">
+            <center> 
+               Title of your item<input type = "text" style = "width: 40%; margin-left:10%;" 
+                  placeholder = "bed/desk/chair" name = "username" />
+            </center>
+         </div>
+			
+        
+            
+               <button style = "border:0px; background-color:#4285F4; margin-top:8%;
+                  height:35px; width:40%;margin-left:30%; margin-right:30%" type = "submit" 
+                  value = "Submit" >
+                  <strong>Submit</strong>
+               </button>
+               
+            </center>
+         </div>
+         
+      </form>
+      
+   </body>
+>>>>>>> Stashed changes
 {% endblock %}
