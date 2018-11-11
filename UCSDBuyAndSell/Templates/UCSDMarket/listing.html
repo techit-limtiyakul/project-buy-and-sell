@@ -10,11 +10,11 @@
 					{% for pic in Pictures %}
 						{% if pic.Number == 1%}
 							<div class="carousel-item active">
-								<img id="myImg" class="d-block w-100" src="{{ pic.Image.picture.url }}"">
+								<img id="myImg" class="d-block w-100" src="{{ pic.Image }}"">
 							</div>
 						{% else %}
 							<div class="carousel-item">
-								<img id="myImg" class="d-block w-100" src="{{ pic.Image.picture.url }}">
+								<img id="myImg" class="d-block w-100" src="{{ pic.Image }}">
 							</div>
 						{% endif %}
 					{% endfor %}
@@ -39,7 +39,7 @@
 				<p><b>Can Deliver: No</b></p>
 			{% endif %}
 			<p><b>Condition: {{ Condition }}</b></p>
-			<p>{{ Description }}</p>
+			<p><b>Description:</b> {{ Description }}</p>
 			<p><b>Contact Information:</b> {{ ContactInformation }}</p>
 		</div>
 		<div class="col-4">

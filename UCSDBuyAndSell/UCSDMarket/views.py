@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
+from django.templatetags.static import static
 from UCSDMarket.forms import SignupForm, CreateListingForm
 from UCSDMarket.models import Picture, Listing
 
@@ -48,7 +49,7 @@ def ListingPage(request):
                 for image in images:
                     imgCount = imgCount + 1
                     all_pictures.append({
-                                        "Image": image,
+                                        "Image": image.picture.url,
                                         "Number": imgCount
                                         })
 
@@ -79,9 +80,9 @@ def MyListings(request):
         for post in MyListings:
             all_images = Picture.objects.filter(listingKey=post)
             if not all_images:
-                thumbImg = False
+                thumbImg = static('img/NoImage.png')
             else:
-                thumbImg = all_images[0]
+                thumbImg = all_images[0].picture.url
             Listings.append({
                 "id" : post.id,
                 "Title" : post.title,
