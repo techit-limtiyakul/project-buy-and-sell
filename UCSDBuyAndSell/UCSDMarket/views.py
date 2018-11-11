@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
-from UCSDMarket.forms import SignupForm, ImageUploadForm
-from UCSDMarket.models import Picture
+from UCSDMarket.forms import SignupForm, ImageUploadForm, CreateListingForm
+from UCSDMarket.models import Picture, Listing
 
 # Create your views here.
 def Home(request):
@@ -107,24 +107,24 @@ def CreateListings(request):
 	if request.user.is_authenticated:
 		if request.method == 'POST':
 			form = CreateListingForm(request.POST, request.FILES)
-				if form.is_valid():
-					newListing = Listing(
-					userID = form.userID,
-					# TODO maybe the form should not have userID and it should come from somewhere else?
-					title = form.title,
-					seller = form.seller,
-					price = form.price,
-					canDeliver = form.canDeliver,
-					condition = form.condition,
-					description = form.description,
-					contactInformation = form.contactInformation)
+			if form.is_valid():
+				newListing = Listing(
+				userID = form.userID,
+				# TODO maybe the form should not have userID and it should come from somewhere else?
+				title = form.title,
+				seller = form.seller,
+				price = form.price,
+				canDeliver = form.canDeliver,
+				condition = form.condition,
+				description = form.description,
+				contactInformation = form.contactInformation)
 		
-					newListing.save()
+				newListing.save()
                 
                 			# save uploaded picture to the database along with the id of the listing
-					for i in range(len(request.FILES['image'])):
-						m = Picture(ListingID = newListing.id, picture = request.FILES['image'][i])
-						m.save()
+				for i in range(len(request.FILES['image'])):
+					m = Picture(ListingID = newListing.id, picture = request.FILES['image'][i])
+					m.save()
 				else:
 					pass
 					# form = CreateListingForm();
