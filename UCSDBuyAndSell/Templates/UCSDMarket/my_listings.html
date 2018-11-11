@@ -6,7 +6,9 @@
 		{% for Listing in Listings %}
 			<div class="row">
 				<div class="col-sm">
-					<img src="{{ Listing.Thumbnail.picture.url }}" width="200" height="200">
+					<a href="{% url 'Listing' %}?listing={{ Listing.id }}">
+						<img src="{{ Listing.Thumbnail.picture.url }}" width="200" height="200">
+					</a>
 				</div>
 				<div class="col-8">
 					<p><b>{{ Listing.Seller }}:</b> RATINGS TODO</p>

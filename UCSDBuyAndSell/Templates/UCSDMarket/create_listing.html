@@ -2,4 +2,9 @@
 {% block content %}
 <h1>{{ Title }}</h1>
 <p>{{ Description }}</p>
+<form action="{% url 'CreateListings' %}" method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
 {% endblock %}

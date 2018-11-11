@@ -1,23 +1,18 @@
 import os
 
+from django.conf import settings
 from django.db import models
 from django.dispatch import receiver
 
 # Create your models here.
-
-class Picture(models.Model):
-	picture = models.ImageField(upload_to = 'pictures/')
-	# listingKey = models.ForeignKey((...)
 	
 class Listing(models.Model):
     
     def __str__ (self):
         return self.title
-
-    userID = models.IntegerField()
-    
+	
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    seller = models.CharField(max_length=50)
     price = models.CharField(max_length=20)
     canDeliver = models.BooleanField() # true or false
     condition = models.CharField(max_length=10)
@@ -35,6 +30,10 @@ class Listing(models.Model):
 		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
 		"ContactInformation" : "858 - 888 - 8888"
     '''
+
+class Picture(models.Model):
+	picture = models.ImageField(upload_to = 'pictures/')
+	listingKey = models.ForeignKey(Listing,on_delete=models.CASCADE)
 
 @receiver(models.signals.post_delete, sender=Picture)
 def DeleteImageFile(sender, instance, **kwargs):

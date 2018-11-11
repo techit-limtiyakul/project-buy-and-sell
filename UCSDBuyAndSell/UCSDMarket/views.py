@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
-from UCSDMarket.forms import SignupForm, ImageUploadForm, CreateListingForm
+from UCSDMarket.forms import SignupForm, CreateListingForm
 from UCSDMarket.models import Picture, Listing
+
 
 # Create your views here.
 def Home(request):
@@ -29,76 +30,70 @@ def Signoff(request):
     return response
 
 def ListingPage(request):
-	all_entries = Picture.objects.all()
+	if request.method=='GET':
+		listingID = request.GET.get('listing')
+		if not listingID:
+			return render(request, 'UCSDMarket/home.html')
+		else:
+			ThisListing = Listing.objects.filter(id=int(listingID))
+			if (len(ThisListing) == 1):
+				ThisListing = ThisListing[0]
 
-	all_pictures = []
-
-	imgCount = 0
-	for entry in all_entries:
-		imgCount = imgCount + 1
-		all_pictures.append({
-							"Image": entry,
-							"Number": imgCount
-							})
-
-	context = {
-		"Title" : "IKEA full size bed",
-		"Seller" : "John Doe",
-		"Price" : 50,
-		"CanDeliver" : True,
-		"Condition" : "Used",
-		"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-		"ContactInformation" : "858 - 888 - 8888",
-		"Pictures": all_pictures
-	}
-
-	return render(request, "UCSDMarket/listing.html", context)
+				images = Picture.objects.filter(listingKey=ThisListing)
+				imgCount = 0
+				all_pictures = []
+				for image in images:
+					imgCount = imgCount + 1
+					all_pictures.append({
+										"Image": image,
+										"Number": imgCount
+										})
+				
+				context = {
+					"id" : ThisListing.id,
+					"Title" : ThisListing.title,
+					"Seller" : ThisListing.user.username,
+					"Price" : ThisListing.price,
+					"CanDeliver" : ThisListing.canDeliver,
+					"Condition" : ThisListing.condition,
+					"Description" : ThisListing.description,
+					"ContactInformation" : ThisListing.contactInformation,
+					"Pictures": all_pictures
+				}
+				
+				return render(request, "UCSDMarket/listing.html", context)
+			else:
+				#Something has gone wrong!
+				return render(request, 'UCSDMarket/home.html')
 
 def MyListings(request):
 
 	if request.user.is_authenticated:
 		# Get listings from user
+		MyListings = Listing.objects.filter(user=request.user)
 		Listings = []
-
-		all_entries = Picture.objects.all()
-		thumbImg = all_entries[:1].get()
-
-		Listings.append({
-			"Title" : "IKEA full size bed",
-			"Seller" : "John Doe",
-			"Price" : 50,
-			"CanDeliver" : True,
-			"Condition" : "Used",
-			"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-			"ContactInformation" : "858 - 888 - 8888",
-			"Thumbnail": thumbImg
-		})
-
-		Listings.append({
-			"Title" : "King Sized Bed",
-			"Seller" : "Reggie Smiles",
-			"Price" : 150,
-			"CanDeliver" : False,
-			"Condition" : "New",
-			"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-			"ContactInformation" : "858 - 888 - 8888",
-			"Thumbnail": thumbImg
-		})
-
-		Listings.append({
-			"Title" : "Comfy Cot",
-			"Seller" : "John Doe",
-			"Price" : 30,
-			"CanDeliver" : True,
-			"Condition" : "Used",
-			"Description" : "Need this gone by Oct 31. Great condition. Can deliver for some extra fee. Original price was $129",
-			"ContactInformation" : "858 - 888 - 8888",
-			"Thumbnail": thumbImg
-		})
+		
+		for post in MyListings:
+			all_images = Picture.objects.filter(listingKey=post)
+			if not all_images:
+				thumbImg = False
+			else:
+				thumbImg = all_images[0]
+			Listings.append({
+				"id" : post.id,
+				"Title" : post.title,
+				"Seller" : post.user.username,
+				"Price" : post.price,
+				"CanDeliver" : post.canDeliver,
+				"Condition" : post.condition,
+				"Description" : post.description,
+				"ContactInformation" : post.contactInformation,
+				"Thumbnail": thumbImg
+			})
 
 		context = {
 			"Listings" : Listings,
-		} #
+		}
 		return render(request, "UCSDMarket/my_listings.html", context)
 	else:
 		return render(request, "UCSDMarket/home.html")
@@ -108,37 +103,44 @@ def CreateListings(request):
 		if request.method == 'POST':
 			form = CreateListingForm(request.POST, request.FILES)
 			if form.is_valid():
+				
+				deliverable = False
+				if request.POST.get('canDeliver', False):
+					deliverable = True
+					
 				newListing = Listing(
-				userID = form.userID,
-				# TODO maybe the form should not have userID and it should come from somewhere else?
-				title = form.title,
-				seller = form.seller,
-				price = form.price,
-				canDeliver = form.canDeliver,
-				condition = form.condition,
-				description = form.description,
-				contactInformation = form.contactInformation)
+				user = request.user,
+				title = request.POST['title'],
+				price = request.POST['price'],
+				canDeliver = deliverable,
+				condition = request.POST['condition'],
+				description = request.POST['description'],
+				contactInformation = request.POST['contactInformation'])
 		
 				newListing.save()
-                
-                			# save uploaded picture to the database along with the id of the listing
-				for i in range(len(request.FILES['image'])):
-					m = Picture(ListingID = newListing.id, picture = request.FILES['image'][i])
-					m.save()
-				else:
-					pass
-					# form = CreateListingForm();
-					# TODO give error message: form is not valid
+                # save uploaded picture to the database along with the id of the listing
+				if request.POST.get('image', False):
+					newPic = Picture(listingKey = newListing, picture=request.FILES['image'])
+					newPic.save()
+#					Upload multiple images
+#					for i in range(len(request.FILES['image'])):
+#						m = Picture(listingKey = newListing, picture = request.FILES['image'][i])
+#						m.save()
+#					else:
+#						pass
+#						# form = CreateListingForm();
+#						# TODO give error message: form is not valid
+		else:
+			form = CreateListingForm()
+		context = {
+			"Title" : "Create my listing here!",
+			"Description" : "Please fill out the following form to post your item.",
+			"form" : form
+		} 
+		return render(request, "UCSDMarket/create_listing.html", context)
 	else:
 		# TODO give error message: user not authenticated
-		pass
-
-	context = {
-		"Title" : "Create my listing here!",
-		"Description" : "Please fill out the following form to post your item."
-
-	} #
-	return render(request, "UCSDMarket/create_listing.html", context)
+		return render(request, "UCSDMarket/home.html")
 
 
 def SearchListings(request):

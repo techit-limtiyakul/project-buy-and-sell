@@ -12,18 +12,13 @@ class SignupForm(UserCreationForm):
 	password2=forms.CharField(label="", widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'Retype Password'}))
 
 class CreateListingForm(forms.Form):
-	renewal_date = forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
+	#renewal_date = forms.DateField(help_text="Enter a date between now and 4 weeks (default 3).")
 	
-	# same structure as the Listing in the database
-	userID = forms.IntegerField()
 	# should userID provided by the form?
 	title = forms.CharField(max_length=50)
-	seller = forms.CharField(max_length=50)
 	price = forms.CharField(max_length=20)
-	canDeliver = forms.BooleanField()
+	canDeliver = forms.BooleanField(required=False)
 	condition = forms.CharField(max_length=10)
-	description = forms.CharField(max_length=500)
+	description = forms.CharField(max_length=500, required=False)
 	contactInformation = forms.CharField(max_length=20)
-
-class ImageUploadForm(forms.Form):
-	image = forms.ImageField()#forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+	image = forms.ImageField(required=False)
