@@ -148,12 +148,39 @@ def CreateListings(request):
 
 
 def SearchListings(request):
+    query_string = ''
+    found_entries = None
+    posts = ""
+    if ('q' in request.GET) and request.GET['q'].strip():
+        query_string = request.GET['q']
+        # entry_query = utils.get_query(query_string, ['title', 'body',])
+        # posts = Post.objects.filter(entry_query).order_by('created')
+        ResultListings = Listing.objects.filter(title=query_string)
+        Listings = []
 
-    context = {
-        "Title" : "Search and explore what you want!",
-        "Description" : "Please enter the information you would like to search.",
-        "Results" : "Here are the results."
+        for post in ResultListings:
+            all_images = Picture.objects.filter(listingKey=post)
+            if not all_images:
+                thumbImg = static('img/NoImage.png')
+            else:
+                thumbImg = all_images[0].picture.url
+            Listings.append({
+                "Title" : post.title,
+                "Price" : post.price,
+                "CanDeliver": post.canDeliver,
+                "Condition": post.condition,
+            })
+        return render(request, 'UCSDMarket/search_listing.html', { 'query_string': query_string, 'posts': Listings})
+    else:
+        return render(request, 'UCSDMarket/search_listing.html', { 'query_string': 'Null', 'found_entries': 'Enter a search term' })
 
-    } #
-    return render(request, "UCSDMarket/search_listing.html", context)
+    # context = {
+    #     "Title" : "Search and explore what you want!",
+    #     "Description" : "Please enter the information you would like to search.",
+    #     "Results" : "Here are the results."
+
+    # } #
+
+
+    # return render(request, "UCSDMarket/search_listing.html", context)
 
