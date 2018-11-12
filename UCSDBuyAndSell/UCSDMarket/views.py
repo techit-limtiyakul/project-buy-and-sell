@@ -165,10 +165,15 @@ def SearchListings(request):
             else:
                 thumbImg = all_images[0].picture.url
             Listings.append({
+                "id" : post.id,
                 "Title" : post.title,
+                "Seller" : post.user.username,
                 "Price" : post.price,
-                "CanDeliver": post.canDeliver,
-                "Condition": post.condition,
+                "CanDeliver" : post.canDeliver,
+                "Condition" : post.condition,
+                "Description" : post.description,
+                "ContactInformation" : post.contactInformation,
+                "Thumbnail": thumbImg
             })
         return render(request, 'UCSDMarket/search_listing.html', { 'query_string': query_string, 'posts': Listings})
     else:
