@@ -33,5 +33,28 @@
 				</div>
 			</div>
 {% endfor %}
+<p id= "ret">Quick Navigation</p>
+<button onclick="myFunction2()">Return</button>
+
+
+<script>
+	const navis = {
+                'Home Page': 'http://{{ request.get_host }}/market/search_listings/',
+                'Search': 'http://{{ request.get_host }}/market/search_listings/'
+            };
+
+function myFunction2(){
+	document.getElementById("ret").innerHTML = "Go to " + linkify("Home Page   Search");
+
+}
+
+function linkify(s) {
+	for (var key in navis){
+	    var link = ('<a href= http://{{ request.get_host }}> '+ key + '</a >');
+        s = s.replace(key, link);
+	}
+		return s;
+}
+</script>
 </body>
 {% endblock %}
