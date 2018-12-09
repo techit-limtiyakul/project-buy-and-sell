@@ -30,19 +30,4 @@
 	</div>
 </div>
 
-{% csrf_token %}
-<button onclick="location.href='{% url 'DeleteUser' %}'" id="DeletUser" class="btn btn-primary" type="button">
-				<span class="glyphicon glyphicon-thumbs-up"></span>
-				Delete
-</button>
-
-<script>
-// Delete Account
-$('#DelUser').click(function(){
-    $.get('/market/delete_user/', {}, function(data){
-               $('#DelUser').hide();
-    });
-});
-</script>
-
 {% endblock %}

@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
 from django.templatetags.static import static
 from UCSDMarket.forms import SignupForm, CreateListingForm
-from UCSDMarket.models import Picture, Listing
+from UCSDMarket.models import Picture, Listing, Favorite
 
 
 # Create your views here.
@@ -16,12 +19,12 @@ def Signup(request):
         username = form.cleaned_data.get('username')
         if not username.endswith('ucsd.edu'):
             form.add_error('username', "Email doesn't end with ucsd.edu")
-            return redirect('Signup')
+            return render(request, 'UCSDMarket/signup.html', {'form': form})
         raw_password = form.cleaned_data.get('password1')
         compare_password = form.cleaned_data.get('password2')
         if raw_password != compare_password:
             form.add_error('compare_password', "Password does not match")
-            return redirect('Signup')
+            return render(request, 'UCSDMarket/signup.html', {'form': form})
         form.save()
         user = authenticate(username=username, password=raw_password)
         login(request, user)
@@ -53,6 +56,10 @@ def ListingPage(request):
                                         "Number": imgCount
                                         })
 
+                Favd = False
+                if Favorite.objects.filter(user=request.user, listingKey=ThisListing.id).exists():
+                    Favd = True
+
                 context = {
                     "id" : ThisListing.id,
                     "Title" : ThisListing.title,
@@ -62,7 +69,8 @@ def ListingPage(request):
                     "Condition" : ThisListing.condition,
                     "Description" : ThisListing.description,
                     "ContactInformation" : ThisListing.contactInformation,
-                    "Pictures": all_pictures
+                    "Pictures": all_pictures,
+                    "Favd": Favd
                 }
 
                 return render(request, "UCSDMarket/listing.html", context)
@@ -102,6 +110,67 @@ def MyListings(request):
     else:
         return render(request, "UCSDMarket/home.html")
 
+def Favorites(request):
+    if request.user.is_authenticated:
+        # Get listings from user
+        Favorites = Favorite.objects.filter(user=request.user)
+        Listings = []
+
+        for FavPost in Favorites:
+            post = FavPost.listingKey
+            all_images = Picture.objects.filter(listingKey=post)
+            if not all_images:
+                thumbImg = static('img/NoImage.png')
+            else:
+                thumbImg = all_images[0].picture.url
+            Listings.append({
+                "id" : post.id,
+                "Title" : post.title,
+                "Seller" : post.user.username,
+                "Price" : post.price,
+                "CanDeliver" : post.canDeliver,
+                "Condition" : post.condition,
+                "Description" : post.description,
+                "ContactInformation" : post.contactInformation,
+                "Thumbnail": thumbImg
+            })
+
+        context = {
+            "Listings" : Listings,
+        }
+        return render(request, "UCSDMarket/favorites.html", context)
+    else:
+        return render(request, "UCSDMarket/home.html")
+
+@login_required
+def Like(request):
+	listing_id = None
+	if request.method == 'GET':
+		listing_id = request.GET['listing_id']
+	
+	listing = Listing.objects.get(id=listing_id)
+	if Favorite.objects.filter(user=request.user, listingKey=listing).exists():
+		Favorite.objects.filter(user=request.user, listingKey=listing).delete()
+	else:
+		Favorite.objects.create(user=request.user, listingKey=listing)
+	return render(request, "UCSDMarket/home.html")
+
+def DeleteUser(request):
+	if request.user.is_authenticated:
+		try:
+			currUserName = request.user.username
+			logout(request)
+			u = User.objects.get(username = currUserName)
+			u.delete()
+			messages.success(request, "Current User Deleted")
+			return render(request, 'UCSDMarket/home.html')
+		except Exception as e:
+			messages.error(request, "Issue has occured while attempting to delete User. Contact support.")
+			return render(request, 'UCSDMarket/home.html')
+	else:
+		messages.error(request, 'User Not Authenticated')
+		return render(request, 'UCSDMarket/home.html')
+
 def CreateListings(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -123,27 +192,21 @@ def CreateListings(request):
 
                 newListing.save()
                 # save uploaded picture to the database along with the id of the listing
-                if request.POST.get('image', False):
+                if request.POST.get('image', True):
                     newPic = Picture(listingKey = newListing, picture=request.FILES['image'])
                     newPic.save()
-#					Upload multiple images
-#					for i in range(len(request.FILES['image'])):
-#						m = Picture(listingKey = newListing, picture = request.FILES['image'][i])
-#						m.save()
-#					else:
-#						pass
-#						# form = CreateListingForm();
-#						# TODO give error message: form is not valid
+                messages.success(request, 'Listing Successfully Created')
+                return redirect("MyListings")
         else:
             form = CreateListingForm()
-        context = {
-            "Title" : "Create my listing here!",
-            "Description" : "Please fill out the following form to post your item.",
-            "form" : form
-        }
-        return render(request, "UCSDMarket/create_listing.html", context)
+            context = {
+                "Title" : "Create my listing here!",
+                "Description" : "Please fill out the following form to post your item.",
+                "form" : form
+            }
+            return render(request, "UCSDMarket/create_listing.html", context)
     else:
-        # TODO give error message: user not authenticated
+        messages.error(request, 'User Not Authenticated')
         return render(request, "UCSDMarket/home.html")
 
 

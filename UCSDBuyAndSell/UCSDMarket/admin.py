@@ -5,3 +5,4 @@ from django.contrib import admin
 
 admin.site.register(models.Picture)
 admin.site.register(models.Listing)
+admin.site.register(models.Favorite)
