@@ -28,8 +28,11 @@ from UCSDMarket.forms import LoginForm
 urlpatterns = [
 	url(r'^$', UCSDMarket.Home, name="Home"),
 	url(r'^market/listing/$', UCSDMarket.ListingPage, name="Listing"),
+	url(r'^market/favorites/$', UCSDMarket.Favorites, name="Favorites"),
+	url(r'^market/like/$', UCSDMarket.Like, name="Like"),
+	url(r'^market/delete_user/$', UCSDMarket.DeleteUser, name="DeleteUser"),
 	url(r'^market/my_listings/$', UCSDMarket.MyListings, name="MyListings"),
-    url(r'^market/create_listings/$', UCSDMarket.CreateListings, name="CreateListings"),
+    url(r'^market/create_listing/$', UCSDMarket.CreateListings, name="CreateListings"),
     url(r'^market/search_listings/$', UCSDMarket.SearchListings, name="SearchListings"),
     url(r'^market/login/$', views.login,{'authentication_form':LoginForm}, name="Login"),
     url(r'^market/signup/$', UCSDMarket.Signup, name="Signup"),

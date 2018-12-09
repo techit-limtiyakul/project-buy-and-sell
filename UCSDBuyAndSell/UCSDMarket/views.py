@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
 from django.templatetags.static import static
 from UCSDMarket.forms import SignupForm, CreateListingForm
-from UCSDMarket.models import Picture, Listing
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
@@ -11,6 +13,7 @@ from django.template.loader import render_to_string
 from UCSDBuyAndSell.tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+from UCSDMarket.models import Picture, Listing, Favorite
 
 
 # Create your views here.
@@ -92,6 +95,10 @@ def ListingPage(request):
                                         "Number": imgCount
                                         })
 
+                Favd = False
+                if Favorite.objects.filter(user=request.user, listingKey=ThisListing.id).exists():
+                    Favd = True
+
                 context = {
                     "id" : ThisListing.id,
                     "Title" : ThisListing.title,
@@ -101,9 +108,9 @@ def ListingPage(request):
                     "Condition" : ThisListing.condition,
                     "Description" : ThisListing.description,
                     "ContactInformation" : ThisListing.contactInformation,
-                    "Pictures": all_pictures
+                    "Pictures": all_pictures,
+                    "Favd": Favd
                 }
-
                 return render(request, "UCSDMarket/listing.html", context)
             else:
                 #Something has gone wrong!
@@ -141,6 +148,71 @@ def MyListings(request):
     else:
         return render(request, "UCSDMarket/home.html")
 
+def Favorites(request):
+    if request.user.is_authenticated:
+        # Get listings from user
+        Favorites = Favorite.objects.filter(user=request.user)
+        Listings = []
+
+        for FavPost in Favorites:
+            post = FavPost.listingKey
+            all_images = Picture.objects.filter(listingKey=post)
+            if not all_images:
+                thumbImg = static('img/NoImage.png')
+            else:
+                thumbImg = all_images[0].picture.url
+            Favd = False
+            if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=post.id).exists():
+                Favd = True
+            Listings.append({
+                "id" : post.id,
+                "Title" : post.title,
+                "Seller" : post.user.username,
+                "Price" : post.price,
+                "CanDeliver" : post.canDeliver,
+                "Condition" : post.condition,
+                "Description" : post.description,
+                "ContactInformation" : post.contactInformation,
+                "Thumbnail": thumbImg,
+				"Favd": Favd
+            })
+
+        context = {
+            "Listings" : Listings,
+        }
+        return render(request, "UCSDMarket/favorites.html", context)
+    else:
+        return render(request, "UCSDMarket/home.html")
+
+@login_required
+def Like(request):
+	listing_id = None
+	if request.method == 'GET':
+		listing_id = request.GET['listing_id']
+	
+	listing = Listing.objects.get(id=listing_id)
+	if Favorite.objects.filter(user=request.user, listingKey=listing).exists():
+		Favorite.objects.filter(user=request.user, listingKey=listing).delete()
+	else:
+		Favorite.objects.create(user=request.user, listingKey=listing)
+	return render(request, "UCSDMarket/home.html")
+
+def DeleteUser(request):
+	if request.user.is_authenticated:
+		try:
+			currUserName = request.user.username
+			logout(request)
+			u = User.objects.get(username = currUserName)
+			u.delete()
+			messages.success(request, "Current User Deleted")
+			return render(request, 'UCSDMarket/home.html')
+		except Exception as e:
+			messages.error(request, "Issue has occured while attempting to delete User. Contact support.")
+			return render(request, 'UCSDMarket/home.html')
+	else:
+		messages.error(request, 'User Not Authenticated')
+		return render(request, 'UCSDMarket/home.html')
+
 def CreateListings(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -162,27 +234,21 @@ def CreateListings(request):
 
                 newListing.save()
                 # save uploaded picture to the database along with the id of the listing
-                if request.POST.get('image', False):
+                if request.POST.get('image', True):
                     newPic = Picture(listingKey = newListing, picture=request.FILES['image'])
                     newPic.save()
-#					Upload multiple images
-#					for i in range(len(request.FILES['image'])):
-#						m = Picture(listingKey = newListing, picture = request.FILES['image'][i])
-#						m.save()
-#					else:
-#						pass
-#						# form = CreateListingForm();
-#						# TODO give error message: form is not valid
+                messages.success(request, 'Listing Successfully Created')
+                return redirect("MyListings")
         else:
             form = CreateListingForm()
-        context = {
-            "Title" : "Create my listing here!",
-            "Description" : "Please fill out the following form to post your item.",
-            "form" : form
-        }
-        return render(request, "UCSDMarket/create_listing.html", context)
+            context = {
+                "Title" : "Create my listing here!",
+                "Description" : "Please fill out the following form to post your item.",
+                "form" : form
+            }
+            return render(request, "UCSDMarket/create_listing.html", context)
     else:
-        # TODO give error message: user not authenticated
+        messages.error(request, 'User Not Authenticated')
         return render(request, "UCSDMarket/home.html")
 
 
@@ -203,6 +269,9 @@ def SearchListings(request):
                 thumbImg = static('img/NoImage.png')
             else:
                 thumbImg = all_images[0].picture.url
+            Favd = False
+            if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=post.id).exists():
+                Favd = True
             Listings.append({
                 "id" : post.id,
                 "Title" : post.title,
@@ -212,7 +281,8 @@ def SearchListings(request):
                 "Condition" : post.condition,
                 "Description" : post.description,
                 "ContactInformation" : post.contactInformation,
-                "Thumbnail": thumbImg
+                "Thumbnail": thumbImg,
+				"Favd": Favd
             })
         return render(request, 'UCSDMarket/search_listing.html', { 'query_string': query_string, 'posts': Listings})
     else:
