@@ -34,6 +34,8 @@ urlpatterns = [
     url(r'^market/login/$', views.login,{'authentication_form':LoginForm}, name="Login"),
     url(r'^market/signup/$', UCSDMarket.Signup, name="Signup"),
     url(r'^market/signoff/$', UCSDMarket.Signoff, name="Signoff"),
+    url(r'^market/activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        UCSDMarket.activate, name='activate'),
 	path('admin/', admin.site.urls),
 ]
 
