@@ -28,6 +28,7 @@ from UCSDMarket.forms import LoginForm
 urlpatterns = [
 	url(r'^$', UCSDMarket.Home, name="Home"),
 	url(r'^market/listing/$', UCSDMarket.ListingPage, name="Listing"),
+	url(r'^market/delete_listing/$', UCSDMarket.DeleteListing, name="DeleteListing"),
 	url(r'^market/favorites/$', UCSDMarket.Favorites, name="Favorites"),
 	url(r'^market/like/$', UCSDMarket.Like, name="Like"),
 	url(r'^market/delete_user/$', UCSDMarket.DeleteUser, name="DeleteUser"),

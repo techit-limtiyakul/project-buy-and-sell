@@ -298,3 +298,18 @@ def SearchListings(request):
 
     # return render(request, "UCSDMarket/search_listing.html", context)
 
+def DeleteListing(request):
+    if request.user.is_authenticated:
+        try:
+            listingID = request.GET.get('listing')
+            if not listingID:
+                return render(request, 'UCSDMarket/home.html')
+            else:
+                ThisListing = Listing.objects.filter(id=int(listingID))
+                if (len(ThisListing) == 1):
+                    ThisListing.delete()
+                    messages.success(request, "Listing Deleted")
+        except Exception as e:
+            messages.error(request, "Issue has occured while attempting to delete listing. Contact support.")
+    return redirect("MyListings")
+
