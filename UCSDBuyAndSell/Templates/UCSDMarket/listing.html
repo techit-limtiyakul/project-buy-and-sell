@@ -31,6 +31,16 @@
 		</div>
 		<div class="col-8">
 			<h1>{{ Title }}</h1>
+			{% if user.is_authenticated %}
+				<button id="like" data-listid="{{ id }}" class="btn btn-primary" type="button">
+				<span class="glyphicon glyphicon-thumbs-up"></span>
+				{% if Favd %}
+					Unfavorite
+				{% else %}
+					Favorite
+				{% endif %}
+				</button>
+			{% endif %}
 			<p><b>{{ Seller }}:</b> RATINGS TODO</p>
 			<p><b>Price:</b> ${{ Price }}</p>
 			{% if CanDeliver %}
@@ -77,6 +87,15 @@ var span = document.getElementsByClassName("close")[0];
 span.onclick = function() { 
   modal.style.display = "none";
 }
+
+// Like
+$('#like').click(function(){
+    var listid;
+    listid = $(this).attr("data-listid");
+    $.get('/market/like/', {listing_id: listid}, function(data){
+               location.reload();
+    });
+});
 </script>
 
 {% endblock %}
