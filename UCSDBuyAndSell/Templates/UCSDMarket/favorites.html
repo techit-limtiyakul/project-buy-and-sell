@@ -1,15 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- <h1>{{ Title }}</h1>
-<p>{{ Description }}</p>
-<p>{{ Results }}</p> -->
-<body>
-<form id="searchform" action="http://{{ request.get_host }}/market/search_listings/" method="get">
-    enter title:<input type="text" name="q" type="text"/>
-    <button type="button" onclick="searchform.submit()">Search</button>
-</form>
-<p>Posts containing '{{query_string}}'</p>
-{% for Listing in posts %}	
+
+<div class="ScrollableDiv">
+	<div class="container">
+		{% for Listing in Listings %}
 			<div class="row">
 				<div class="col-sm">
 					<a href="{% url 'Listing' %}?listing={{ Listing.id }}">
@@ -17,8 +11,8 @@
 					</a>
 				</div>
 				<div class="col-8">
-					<p>title: <b>{{ Listing.Title }}</b> </p>
-					<p>price: {{ Listing.Price }}</p>
+					<p><b>{{ Listing.Seller }}:</b> RATINGS TODO</p>
+					<p>Price: ${{ Listing.Price }}</p>
 					{% if Listing.CanDeliver %}
 						<p><b>Can Deliver: Yes</b></p>
 					{% else %}
@@ -42,8 +36,9 @@
 				<div class="col-4">
 				</div>
 			</div>
-{% endfor %}
-</body>
+		{% endfor %}
+	</div>
+</div>
 
 <script>
 // Like
@@ -55,4 +50,5 @@ $('.FavBtn').click(function(){
     });
 });
 </script>
+
 {% endblock %}
