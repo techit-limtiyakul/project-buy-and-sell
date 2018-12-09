@@ -29,20 +29,9 @@
 		{% endfor %}
 	</div>
 </div>
-
-{% csrf_token %}
-<button onclick="location.href='{% url 'DeleteUser' %}'" id="DeletUser" class="btn btn-primary" type="button">
+DELETE USER BUTTON TO BE MOVED INTO EDIT PROFILE AND PROTECTED
+<button onclick="location.href='{% url 'DeleteUser' %}'" class="btn btn-primary" type="button">
 				<span class="glyphicon glyphicon-thumbs-up"></span>
 				Delete
 </button>
-
-<script>
-// Delete Account
-$('#DelUser').click(function(){
-    $.get('/market/delete_user/', {}, function(data){
-               $('#DelUser').hide();
-    });
-});
-</script>
-
 {% endblock %}

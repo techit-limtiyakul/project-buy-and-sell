@@ -72,7 +72,6 @@ def ListingPage(request):
                     "Pictures": all_pictures,
                     "Favd": Favd
                 }
-
                 return render(request, "UCSDMarket/listing.html", context)
             else:
                 #Something has gone wrong!
@@ -123,6 +122,9 @@ def Favorites(request):
                 thumbImg = static('img/NoImage.png')
             else:
                 thumbImg = all_images[0].picture.url
+            Favd = False
+            if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=post.id).exists():
+                Favd = True
             Listings.append({
                 "id" : post.id,
                 "Title" : post.title,
@@ -132,7 +134,8 @@ def Favorites(request):
                 "Condition" : post.condition,
                 "Description" : post.description,
                 "ContactInformation" : post.contactInformation,
-                "Thumbnail": thumbImg
+                "Thumbnail": thumbImg,
+				"Favd": Favd
             })
 
         context = {
@@ -227,6 +230,9 @@ def SearchListings(request):
                 thumbImg = static('img/NoImage.png')
             else:
                 thumbImg = all_images[0].picture.url
+            Favd = False
+            if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=post.id).exists():
+                Favd = True
             Listings.append({
                 "id" : post.id,
                 "Title" : post.title,
@@ -236,7 +242,8 @@ def SearchListings(request):
                 "Condition" : post.condition,
                 "Description" : post.description,
                 "ContactInformation" : post.contactInformation,
-                "Thumbnail": thumbImg
+                "Thumbnail": thumbImg,
+				"Favd": Favd
             })
         return render(request, 'UCSDMarket/search_listing.html', { 'query_string': query_string, 'posts': Listings})
     else:
