@@ -25,12 +25,12 @@ def Signup(request):
             username = form.cleaned_data.get('username')
             if not username.endswith('ucsd.edu'):
                 form.add_error('username', "Email doesn't end with ucsd.edu")
-                return redirect('Signup')
+                return render(request, 'UCSDMarket/signup.html', {'form': form})
             raw_password = form.cleaned_data.get('password1')
             compare_password = form.cleaned_data.get('password2')
             if raw_password != compare_password:
                 form.add_error('compare_password', "Password does not match")
-                return redirect('Signup')
+                return render(request, 'UCSDMarket/signup.html', {'form': form})
             user = form.save(commit=False)
             user.is_active = False
             user.save()
