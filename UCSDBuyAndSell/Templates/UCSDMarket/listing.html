@@ -41,6 +41,9 @@
 			<p><b>Condition: {{ Condition }}</b></p>
 			<p><b>Description:</b> {{ Description }}</p>
 			<p><b>Contact Information:</b> {{ ContactInformation }}</p>
+			<a href="{% url 'DeleteListing' %}?listing={{id}}">
+				<p><b><u>Delete Listing</u></b></p>
+			</a>
 		</div>
 		<div class="col-4">
 		</div>
