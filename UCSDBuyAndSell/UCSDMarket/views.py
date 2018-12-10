@@ -98,7 +98,7 @@ def ListingPage(request):
                                         })
 
                 Favd = False
-                if Favorite.objects.filter(user=request.user, listingKey=ThisListing.id).exists():
+                if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=ThisListing.id).exists():
                     Favd = True
 
                 context = {
