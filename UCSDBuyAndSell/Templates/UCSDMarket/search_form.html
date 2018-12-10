@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<html>
+<head>
+    <title>Search</title>
+</head>
+<body>
+	{% if error %}
+        <p style="color: red;">Search term cannot be empty. Please submit a search term.</p>
+    {% endif %}
+    <form action="" method="get">
+    	<p>Title:
+        <input type="text" name="q_title" placeholder="Title">
+        </p>
+        <p>Price
+        <input type="text" name="q_price" placeholder="Price">
+        </p>
+        <p>Seller must deliver the item to me
+        <input type=checkbox name="q_canDeliver" checked=checked>
+        </p>
+        <p>Condition
+        <input type="text" name="q_condition" placeholder="">
+        </p>
+        <p>Description
+        <input type="text" name="q_description" placeholder="">
+        </p>
+        <p></p>
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
+
+{% endblock %}

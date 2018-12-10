@@ -31,6 +31,8 @@ urlpatterns = [
 	url(r'^market/my_listings/$', UCSDMarket.MyListings, name="MyListings"),
     url(r'^market/create_listings/$', UCSDMarket.CreateListings, name="CreateListings"),
     url(r'^market/search_listings/$', UCSDMarket.SearchListings, name="SearchListings"),
+    # url(r'^search-form/$', UCSDMarket.search_form),
+    url(r'^search/$', UCSDMarket.search, name="search"),
     url(r'^market/login/$', views.login,{'authentication_form':LoginForm}, name="Login"),
     url(r'^market/signup/$', UCSDMarket.Signup, name="Signup"),
     url(r'^market/signoff/$', UCSDMarket.Signoff, name="Signoff"),
