@@ -28,14 +28,20 @@ from UCSDMarket.forms import LoginForm
 urlpatterns = [
 	url(r'^$', UCSDMarket.Home, name="Home"),
 	url(r'^market/listing/$', UCSDMarket.ListingPage, name="Listing"),
+	url(r'^market/delete_listing/$', UCSDMarket.DeleteListing, name="DeleteListing"),
+	url(r'^market/favorites/$', UCSDMarket.Favorites, name="Favorites"),
+	url(r'^market/like/$', UCSDMarket.Like, name="Like"),
+	url(r'^market/delete_user/$', UCSDMarket.DeleteUser, name="DeleteUser"),
 	url(r'^market/my_listings/$', UCSDMarket.MyListings, name="MyListings"),
-    url(r'^market/create_listings/$', UCSDMarket.CreateListings, name="CreateListings"),
+    url(r'^market/create_listing/$', UCSDMarket.CreateListings, name="CreateListings"),
     url(r'^market/search_listings/$', UCSDMarket.SearchListings, name="SearchListings"),
     # url(r'^search-form/$', UCSDMarket.search_form),
     url(r'^search/$', UCSDMarket.search, name="search"),
     url(r'^market/login/$', views.login,{'authentication_form':LoginForm}, name="Login"),
     url(r'^market/signup/$', UCSDMarket.Signup, name="Signup"),
     url(r'^market/signoff/$', UCSDMarket.Signoff, name="Signoff"),
+    url(r'^market/activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        UCSDMarket.activate, name='activate'),
 	path('admin/', admin.site.urls),
 ]
 

@@ -22,9 +22,16 @@
 					<a href="{% url 'Listing' %}?listing={{ Listing.id }}">
 						<p><b><u>Listing Page</u></b></p>
 					</a>
-					<a href="{% url 'DeleteListing' %}?listing={{ Listing.id }}">
-						<p><b><u>Delete Listing</u></b></p>
-					</a>
+					{% if user.is_authenticated %}
+						<button id="like" data-listid="{{ Listing.id }}" class="FavBtn btn btn-primary" type="button">
+						<span class="glyphicon glyphicon-thumbs-up"></span>
+						{% if Listing.Favd %}
+							Unfavorite
+						{% else %}
+							Favorite
+						{% endif %}
+						</button>
+					{% endif %}
 				</div>
 				<div class="col-4">
 				</div>
@@ -32,9 +39,16 @@
 		{% endfor %}
 	</div>
 </div>
-DELETE USER BUTTON TO BE MOVED INTO EDIT PROFILE AND PROTECTED
-<button onclick="location.href='{% url 'DeleteUser' %}'" class="btn btn-primary" type="button">
-				<span class="glyphicon glyphicon-thumbs-up"></span>
-				Delete
-</button>
+
+<script>
+// Like
+$('.FavBtn').click(function(){
+    var listid;
+    listid = $(this).attr("data-listid");
+    $.get('/market/like/', {listing_id: listid}, function(data){
+               location.reload();
+    });
+});
+</script>
+
 {% endblock %}

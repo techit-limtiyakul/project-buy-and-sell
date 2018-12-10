@@ -31,6 +31,10 @@ class Listing(models.Model):
 		"ContactInformation" : "858 - 888 - 8888"
     '''
 
+class Favorite(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    listingKey = models.ForeignKey(Listing,on_delete=models.CASCADE)
+
 class Picture(models.Model):
 	picture = models.ImageField(upload_to = 'pictures/')
 	listingKey = models.ForeignKey(Listing,on_delete=models.CASCADE)
