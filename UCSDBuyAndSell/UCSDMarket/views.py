@@ -16,7 +16,7 @@ from django.core.mail import EmailMessage
 from UCSDMarket.models import Picture, Listing, Favorite
 from django.db.models import Q
 from django.http import HttpResponse
-
+from decimal import Decimal
 
 # Create your views here.
 def Home(request):
@@ -105,7 +105,7 @@ def ListingPage(request):
                     "id" : ThisListing.id,
                     "Title" : ThisListing.title,
                     "Seller" : ThisListing.user.username,
-                    "Price" : ThisListing.price,
+                    "Price" : ThisListing.Price,
                     "CanDeliver" : ThisListing.canDeliver,
                     "Condition" : ThisListing.condition,
                     "Description" : ThisListing.description,
@@ -135,7 +135,7 @@ def MyListings(request):
                 "id" : post.id,
                 "Title" : post.title,
                 "Seller" : post.user.username,
-                "Price" : post.price,
+                "Price" : post.Price,
                 "CanDeliver" : post.canDeliver,
                 "Condition" : post.condition,
                 "Description" : post.description,
@@ -170,7 +170,7 @@ def Favorites(request):
                 "id" : post.id,
                 "Title" : post.title,
                 "Seller" : post.user.username,
-                "Price" : post.price,
+                "Price" : post.Price,
                 "CanDeliver" : post.canDeliver,
                 "Condition" : post.condition,
                 "Description" : post.description,
@@ -228,7 +228,7 @@ def CreateListings(request):
                 newListing = Listing(
                 user = request.user,
                 title = request.POST['title'],
-                price = request.POST['price'],
+                Price = request.POST['Price'],
                 canDeliver = deliverable,
                 condition = request.POST['condition'],
                 description = request.POST['description'],
@@ -282,7 +282,7 @@ def SearchListings(request):
             "id" : post.id,
             "Title" : post.title,
             "Seller" : post.user.username,
-            "Price" : post.price,
+            "Price" : post.Price,
             "CanDeliver" : post.canDeliver,
             "Condition" : post.condition,
             "Description" : post.description,
@@ -314,6 +314,28 @@ def search(request):
     condition = ""
     description = ""
 
+    LowPrice = "NoLowPrice"
+    HighPrice = "NoHighPrice"
+
+    if 'q_lowprice' in request.GET:
+        lowprice_words = request.GET['q_lowprice']
+        if lowprice_words:
+            try:
+                float(lowprice_words)
+                LowPrice = lowprice_words
+                empty_query = False
+            except ValueError:
+                LowPrice = "NoLowPrice"
+    if 'q_highprice' in request.GET:
+        highprice_words = request.GET['q_highprice']
+        if highprice_words:
+            try:
+                float(highprice_words)
+                HighPrice = highprice_words
+                empty_query = False
+            except ValueError:
+                HighPrice = "NoHighPrice"
+
     filters = {}
 
     if 'q_title' in request.GET:
@@ -324,15 +346,6 @@ def search(request):
             empty_query = False
             filters['title__contains'] = title_words
 
- 
-
-
-    if 'q_price' in request.GET:
-        
-        price_words = request.GET['q_price']
-        if price_words:
-            empty_query = False
-            filters['price'] = price_words
 
     if 'q_canDeliver' in request.GET:
         if request.GET['q_canDeliver'] == "on":
@@ -358,6 +371,10 @@ def search(request):
         listings = Listing.objects.filter(**filters)
         print(listings)
 
+        if LowPrice != "NoLowPrice":
+            listings = listings.filter(Price__gt=Decimal(LowPrice))
+        if HighPrice != "NoHighPrice":
+            listings = listings.filter(Price__lt=Decimal(HighPrice))
         Listings = []
 
         for post in listings:
@@ -373,7 +390,7 @@ def search(request):
                 "id" : post.id,
                 "Title" : post.title,
                 "Seller" : post.user.username,
-                "Price" : post.price,
+                "Price" : post.Price,
                 "CanDeliver" : post.canDeliver,
                 "Condition" : post.condition,
                 "Description" : post.description,

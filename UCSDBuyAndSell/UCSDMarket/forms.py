@@ -13,7 +13,7 @@ class SignupForm(UserCreationForm):
 
 class CreateListingForm(forms.Form):
 	title = forms.CharField(max_length=50)
-	price = forms.CharField(max_length=20)
+	Price = forms.DecimalField(max_digits=20, decimal_places=2)
 	canDeliver = forms.BooleanField(required=False)
 	condition = forms.CharField(max_length=10)
 	description = forms.CharField(max_length=500, required=False)
