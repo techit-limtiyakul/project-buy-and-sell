@@ -3,38 +3,42 @@
 
 <div class="ScrollableDiv">
 	<div class="container">
-		{% for Listing in Listings %}
-			<div class="card listing">
-				<div class="card-body">
-					<h5 class='card-title'>{{Listing.Title}}</h5>
-					<div class='row'>
-						<div class="col-4" style="margin:auto" height="100%">
-							<a href="{% url 'Listing' %}?listing={{ Listing.id }}">
-								<img src="{{ Listing.Thumbnail }}" width="100%">
-							</a>
-						</div>
-						<div class="col-8 listing-desc">
-							<div><b>Price: </b>${{ Listing.Price }}</div>
-							{% if Listing.CanDeliver %}
-								<div><b>Can Deliver: </b>Yes</div>
-							{% else %}
-								<div><b>Can Deliver: </b>No</div>
-							{% endif %}
-							<div><b>Condition: </b>{{ Listing.Condition }}</div>
-							<div class='brief-desc'>{{Listing.Description}}</div>
-							<div class='ml-auto mt-auto'>
-								<a class='btn btn-warning' href="{% url 'Listing' %}?listing={{ Listing.id }}">
-									Listing Page
+		{% if Listings %}
+			{% for Listing in Listings %}
+				<div class="card listing">
+					<div class="card-body">
+						<h5 class='card-title'>{{Listing.Title}}</h5>
+						<div class='row'>
+							<div class="col-4" style="margin:auto" height="100%">
+								<a href="{% url 'Listing' %}?listing={{ Listing.id }}">
+									<img src="{{ Listing.Thumbnail }}" width="100%">
 								</a>
-								<a class='btn btn-danger' href="{% url 'DeleteListing' %}?listing={{ Listing.id }}">
-									Delete Listing
-								</a>
+							</div>
+							<div class="col-8 listing-desc">
+								<div><b>Price: </b>${{ Listing.Price }}</div>
+								{% if Listing.CanDeliver %}
+									<div><b>Can Deliver: </b>Yes</div>
+								{% else %}
+									<div><b>Can Deliver: </b>No</div>
+								{% endif %}
+								<div><b>Condition: </b>{{ Listing.Condition }}</div>
+								<div class='brief-desc'>{{Listing.Description}}</div>
+								<div class='ml-auto mt-auto'>
+									<a class='btn btn-warning' href="{% url 'Listing' %}?listing={{ Listing.id }}">
+										Listing Page
+									</a>
+									<a class='btn btn-danger' href="{% url 'DeleteListing' %}?listing={{ Listing.id }}">
+										Delete Listing
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		{% endfor %}
+			{% endfor %}
+		{% else %}
+			<h2>You have no listings.</h2>
+		{% endif %}
 	</div>
 </div>
 
