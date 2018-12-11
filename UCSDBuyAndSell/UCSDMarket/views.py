@@ -213,6 +213,19 @@ def DeleteUser(request):
 		messages.error(request, 'User Not Authenticated')
 		return render(request, 'UCSDMarket/home.html')
 
+
+def Profile(request):
+    if request.user.is_authenticated:
+        try:
+            return render(request, 'UCSDMarket/profile.html')
+        except Exception as e:
+            messages.error(request, "Issue has occured while attempting to delete User. Contact support.")
+            return render(request, 'UCSDMarket/home.html')
+    else:
+        messages.error(request, 'User Not Authenticated')
+        return render(request, 'UCSDMarket/home.html')
+
+
 def CreateListings(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
