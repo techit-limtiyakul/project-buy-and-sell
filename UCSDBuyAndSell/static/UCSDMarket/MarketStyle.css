@@ -7,9 +7,6 @@ div.ScrollableDiv {
 
 
 
-
-
-
 /* Update this css to match site aesthetic */
 
 
@@ -110,4 +107,16 @@ div.like-btn {
     .modal-content {
         width: 100%;
     }
+}
+
+/* style of the messages for creating a listing, deleting a listing, etc*/
+.messages {
+    padding: 120px 0;
+    text-align: center; 
+    background-color: rgba(70,70,210,0.2);
+}
+
+.homepage-message {
+    padding: 120px 0;
+    text-align: center;
 }
