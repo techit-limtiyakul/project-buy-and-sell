@@ -40,6 +40,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'CreateListings' %}">Create Listings</a>
+			</li>
+			<li class="nav-item">
+        <a class="nav-link" href="{% url 'Profile' %}">Profile</a>
       </li>
 	  {% endif %}
       <li class="nav-item">
@@ -56,18 +59,18 @@
   </div>  
 </nav>
 	
-	
-	<body>
+  {% if messages %}
+	<body class='messages'>
 		
-		{% if messages %}
-		<ul class="messages">
+		<!-- <ul class="messages"> -->
 			{% for msg in messages %}
-			<h2{% if msg.tags %} style="color:blue;background-color:powderblue;" class="{{ msg.tags }}"{% endif %}>{{ msg }}</h2>
+			<h2 {% if msg.tags %} class="{{ msg.tags }}"{% endif %}>{{ msg }}</h2>
 			{% endfor %}
-		</ul>
-		{% endif %}
-		
-		{% block content %}
-		{% endblock %}
+		<!--</ul>  -->
 	</body>
+	{% endif %}
+		
+	{% block content %}
+	{% endblock %}
+
 </html>
