@@ -3,7 +3,27 @@
 <br>
 <br>
 <div class="container">
-	<form method="POST" action="/market/edit_listing/">
+	<form method="POST" action="/market/edit_listing/" enctype='multipart/form-data'>
+		<div class="row">
+			<div>
+				<h1>
+					<span class="editable-display">{{ Title }}</span>
+					<input class="editable-input" name='title' style="display:none">
+				</h1>
+			</div>
+			<div class='like-btn'>
+				{% if user.is_authenticated %}
+					<button id="like" data-listid="{{ id }}" class="btn btn-primary" type="button">
+					<span class="glyphicon glyphicon-thumbs-up"></span>
+					{% if Favd %}
+						Unfavorite
+					{% else %}
+						Favorite
+					{% endif %}
+					</button>
+				{% endif %}
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-sm">
 				<div id="BasicImageCarousel" class="carousel slide" data-ride="carousel">
@@ -29,22 +49,11 @@
 						<span class="sr-only">Next</span>
 					</a>
 				</div>
+				<div>
+					<input type='file' class="editable-input" id='image-upload' name='image' style="display:none">
+				</div>
 			</div>
 			<div class="col-8">
-				<h1>
-					<span class="editable-display">{{ Title }}</span>
-					<input class="editable-input" name='title' style="display:none">
-				</h1>
-				{% if user.is_authenticated %}
-					<button id="like" data-listid="{{ id }}" class="btn btn-primary" type="button">
-					<span class="glyphicon glyphicon-thumbs-up"></span>
-					{% if Favd %}
-						Unfavorite
-					{% else %}
-						Favorite
-					{% endif %}
-					</button>
-				{% endif %}
 				<p><b>{{ Seller }}:</b> RATINGS TODO</p>
 				<input style="display:none" name="id" value="{{id}}">
 				{% csrf_token %}
@@ -90,8 +99,6 @@
 				<a class="btn btn-danger" id="delete-listing-btn" href="{% url 'DeleteListing' %}?listing={{id}}">
 					<b>Delete Listing</b>
 				</a>
-			</div>
-			<div class="col-4">
 			</div>
 		</div>
 	</form>
@@ -162,6 +169,11 @@ var editListingFields = function(){
 		//check if boolean value
 		var self = $(this);
 		let initialElement = self.parent().find('.editable-display');
+		if(initialElement.length == 0)
+		{
+			return;
+		}
+
 		if(initialElement.is('.boolean-value'))
 		{
 			if(initialElement.text().trim() == "Yes"){

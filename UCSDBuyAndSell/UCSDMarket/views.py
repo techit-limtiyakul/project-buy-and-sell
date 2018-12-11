@@ -274,6 +274,10 @@ def EditListings(request):
 
             existingListing.save()
             
+            if request.POST.get('image', True):
+                newPic = Picture(listingKey = existingListing, picture=request.FILES['image'])
+                newPic.save()
+
             return redirect("/market/listing/?listing="+listingId)
         else:
             messages.error(request, 'Unexpected error')
