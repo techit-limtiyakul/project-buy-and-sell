@@ -223,6 +223,17 @@ def DeleteUser(request):
 def Profile(request):
     if request.user.is_authenticated:
         try:
+            if 'q_password1' in request.GET and 'q_password2' in request.GET:
+                pass1 = request.GET['q_password1']
+                pass2 = request.GET['q_password2']
+                if pass1 == pass2 and pass1 != '':
+                    u = User.objects.get(username=request.user.username)
+                    u.set_password(pass1)
+                    u.save()
+                    messages.success(request, 'Password changed. Please Relogin.')
+                    return render(request, 'UCSDMarket/home.html')
+                else:
+                    messages.error(request, 'Passwords did not match.')
             return render(request, 'UCSDMarket/profile.html')
         except Exception as e:
             messages.error(request, "Issue has occured while attempting to delete User. Contact support.")

@@ -2,6 +2,17 @@
 {% block content %}
 <h2 class='profile'>Hello! This is your profile.</h2>
 
+<form action="" method="get">
+	<p>Password:
+	<input type="text" name="q_password1" placeholder="Password">
+	</p>
+	<p>Retype Password:
+		<input type="text" name="q_password2" placeholder="Password">
+	</p>
+	<p></p>
+	<input type="submit" value="ChangePassword">
+</form>
+
 WARNING: DANGEROUS OPERATION
 <button onclick="location.href='{% url 'DeleteUser' %}'" class="btn btn-danger" type="button">
 				<span class="glyphicon glyphicon-thumbs-up"></span>

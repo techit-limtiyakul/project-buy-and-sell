@@ -13,6 +13,12 @@ div.ScrollableDiv {
 /* Style the Image Used to Trigger the Modal */
 body {
     padding-top: 56px;
+    /* try adding a image as background*/
+    background: url(../img/geisel.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
 }
 
 nav.navbar {
