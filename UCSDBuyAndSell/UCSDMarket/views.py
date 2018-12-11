@@ -230,6 +230,7 @@ def Profile(request):
                     u = User.objects.get(username=request.user.username)
                     u.set_password(pass1)
                     u.save()
+                    logout(request)
                     messages.success(request, 'Password changed. Please Relogin.')
                     return render(request, 'UCSDMarket/home.html')
                 else:

@@ -14,9 +14,14 @@
 </form>
 
 WARNING: DANGEROUS OPERATION
+<button data-toggle="collapse" data-target="#deleteAccount">Delete User</button>
+
+<div id="deleteAccount" class="collapse">
+Are you sure?
 <button onclick="location.href='{% url 'DeleteUser' %}'" class="btn btn-danger" type="button">
 				<span class="glyphicon glyphicon-thumbs-up"></span>
 				Delete User Account
 </button>
+</div>
 
 {% endblock %}
