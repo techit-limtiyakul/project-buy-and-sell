@@ -382,7 +382,6 @@ def search(request):
 
     if not empty_query:
         listings = Listing.objects.filter(**filters)
-        print(listings)
 
         if LowPrice != "NoLowPrice":
             listings = listings.filter(Price__gt=Decimal(LowPrice))
