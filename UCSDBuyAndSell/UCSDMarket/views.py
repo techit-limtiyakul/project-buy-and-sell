@@ -20,32 +20,10 @@ from decimal import Decimal
 
 # Create your views here.
 def Home(request):
-        # Get listings from user
-        MyListings = Listing.objects.all()
-        Listings = []
-
-        for post in MyListings:
-            all_images = Picture.objects.filter(listingKey=post)
-            if not all_images:
-                thumbImg = static('img/NoImage.png')
-            else:
-                thumbImg = all_images[0].picture.url
-            Listings.append({
-                "id" : post.id,
-                "Title" : post.title,
-                "Seller" : post.user.username,
-                "Price" : post.Price,
-                "CanDeliver" : post.canDeliver,
-                "Condition" : post.condition,
-                "Description" : post.description,
-                "ContactInformation" : post.contactInformation,
-                "Thumbnail": thumbImg
-            })
-
-        context = {
-            "Listings" : Listings,
-        }
-        return render(request, "UCSDMarket/my_listings.html", context)
+    if request.user.is_authenticated:
+        return redirect("MyListings")
+    else:
+        return render(request, 'UCSDMarket/home.html')
 
 def Signup(request):
     if request.method == 'POST':
