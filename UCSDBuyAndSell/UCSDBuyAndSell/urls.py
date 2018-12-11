@@ -34,6 +34,7 @@ urlpatterns = [
 	url(r'^market/delete_user/$', UCSDMarket.DeleteUser, name="DeleteUser"),
 	url(r'^market/my_listings/$', UCSDMarket.MyListings, name="MyListings"),
     url(r'^market/create_listing/$', UCSDMarket.CreateListings, name="CreateListings"),
+    url(r'^market/edit_listing/$', UCSDMarket.EditListings, name="EditListings"),
     url(r'^market/search_listings/$', UCSDMarket.SearchListings, name="SearchListings"),
     # url(r'^search-form/$', UCSDMarket.search_form),
     url(r'^search/$', UCSDMarket.search, name="search"),

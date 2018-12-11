@@ -253,6 +253,71 @@ def CreateListings(request):
         messages.error(request, 'User Not Authenticated')
         return render(request, "UCSDMarket/home.html")
 
+def EditListings(request):
+     # if request.method=='GET':
+     #    listingID = request.GET.get('listing')
+     #    if not listingID:
+     #        return render(request, 'UCSDMarket/home.html')
+     #    else:
+     #        ThisListing = Listing.objects.filter(id=int(listingID))
+     #        if (len(ThisListing) == 1):
+     #            ThisListing = ThisListing[0]
+
+     #            images = Picture.objects.filter(listingKey=ThisListing)
+     #            imgCount = 0
+     #            all_pictures = []
+     #            for image in images:
+     #                imgCount = imgCount + 1
+     #                all_pictures.append({
+     #                                    "Image": image.picture.url,
+     #                                    "Number": imgCount
+     #                                    })
+
+     #            Favd = False
+     #            if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=ThisListing.id).exists():
+     #                Favd = True
+
+     #            context = {
+     #                "id" : ThisListing.id,
+     #                "Title" : ThisListing.title,
+     #                "Seller" : ThisListing.user.username,
+     #                "Price" : ThisListing.Price,
+     #                "CanDeliver" : ThisListing.canDeliver,
+     #                "Condition" : ThisListing.condition,
+     #                "Description" : ThisListing.description,
+     #                "ContactInformation" : ThisListing.contactInformation,
+     #                "Pictures": all_pictures,
+     #                "Favd": Favd
+     #            }
+     #            return render(request, "UCSDMarket/listing.html", context)
+
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            listingId = request.POST['id'];
+
+            existingListing = Listing.objects.get(id=listingId)
+
+            if request.POST.get('canDeliver', False):
+                canDeliver = True
+            else:
+                canDeliver = False
+
+            existingListing.title = request.POST['title']
+            existingListing.Price = request.POST['price']
+            existingListing.canDeliver = canDeliver
+            existingListing.condition = request.POST['condition']
+            existingListing.description = request.POST['description']
+            existingListing.contactInformation = request.POST['contactInformation']
+
+            existingListing.save()
+            
+            return render(request, "UCSDMarket/home.html")
+        else:
+            messages.error(request, 'Unexpected error')
+            return render(request, "UCSDMarket/home.html")
+    else:
+        messages.error(request, 'User Not Authenticated')
+        return render(request, "UCSDMarket/home.html")
 
 def SearchListings(request):
     template = "UCSDMarket/my_listings.html"
