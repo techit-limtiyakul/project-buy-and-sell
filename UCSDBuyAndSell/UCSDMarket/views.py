@@ -93,6 +93,7 @@ def ListingPage(request):
                 for image in images:
                     imgCount = imgCount + 1
                     all_pictures.append({
+                                        "id": image.id,
                                         "Image": image.picture.url,
                                         "Number": imgCount
                                         })
@@ -274,9 +275,18 @@ def EditListings(request):
 
             existingListing.save()
             
+            # delete images
+            for key in request.POST:
+                if key.startswith('deleteImage'):
+                    id = key[12:]
+                    picToDel = Picture.objects.get(id=id)
+                    picToDel.delete()
+
             if request.POST.get('image', True):
-                newPic = Picture(listingKey = existingListing, picture=request.FILES['image'])
-                newPic.save()
+                for img in  request.FILES.getlist('image'):
+                    newPic = Picture(listingKey = existingListing, picture=img)
+                    newPic.save()
+
 
             return redirect("/market/listing/?listing="+listingId)
         else:

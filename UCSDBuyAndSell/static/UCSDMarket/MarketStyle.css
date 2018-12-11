@@ -64,6 +64,7 @@ body {
 div.like-btn {
     margin: auto 10px;
 }
+
 /* Add Animation - Zoom in the Modal */
 .modal-content, #caption { 
     animation-name: zoom;
@@ -73,6 +74,17 @@ div.like-btn {
 @keyframes zoom {
     from {transform:scale(0)} 
     to {transform:scale(1)}
+}
+
+.image-icon img{
+    margin-left: 4px;
+    margin-right: 4px;
+    width: 20%;
+}
+
+.image-icon input {
+    position: absolute;
+    right: 5px;
 }
 
 /* The Close Button */

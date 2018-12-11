@@ -27,7 +27,7 @@
 		<div class="row">
 			<div class="col-sm">
 				<div id="BasicImageCarousel" class="carousel slide" data-ride="carousel">
-					<div class="carousel-inner">
+					<div class="carousel-inner" style="height:25vw; !important">
 						{% for pic in Pictures %}
 							{% if pic.Number == 1%}
 								<div class="carousel-item active">
@@ -49,8 +49,19 @@
 						<span class="sr-only">Next</span>
 					</a>
 				</div>
-				<div>
-					<input type='file' class="editable-input" id='image-upload' name='image' style="display:none">
+				<div style='margin:10px'>
+					<b class='editable-input' style='display:none'>Check the images you wish to remove</b>
+					{% for pic in Pictures %}
+					<span class='image-icon' style="position:relative">
+						<img data-target="#BasicImageCarousel" data-slide-to="{{forloop.counter0}}" src="{{pic.Image}}">
+						<input class='editable-input image-edit' type='checkbox' name='deleteImage_{{pic.id}}' style='display:none'>
+						<!-- {{ pic.id }} -->
+					</span>
+					{% endfor %}
+				</div>
+				<div class='card editable-input' style='display:none; padding:5px'>
+					<b>Upload new images</b>
+					<input type='file' id='image-upload' name='image' multiple>
 				</div>
 			</div>
 			<div class="col-8">
@@ -64,14 +75,14 @@
 				</p>
 				<p>
 					<b>Can Deliver: </b>
-					<span class="editable-display boolean-value">
+					<span class="editable-display">
 					{% if CanDeliver %}
 					Yes
 					{% else %}
 					No
 					{% endif %}
 					</span>
-					<input type="checkbox" name='canDeliver' class="editable-input" style="display:none">
+					<input type="checkbox" name='canDeliver' class="editable-input boolean-value" style="display:none">
 				</p>
 				<p>
 					<b>Condition: </b>
@@ -169,12 +180,18 @@ var editListingFields = function(){
 		//check if boolean value
 		var self = $(this);
 		let initialElement = self.parent().find('.editable-display');
+
+		if(self.is('.image-edit'))
+		{
+			self.prop("checked", false);
+		}
+
 		if(initialElement.length == 0)
 		{
 			return;
 		}
 
-		if(initialElement.is('.boolean-value'))
+		if(self.is('.boolean-value'))
 		{
 			if(initialElement.text().trim() == "Yes"){
 				self.prop("checked", true);
@@ -184,6 +201,7 @@ var editListingFields = function(){
 				self.prop("checked", false)
 			}
 		}
+
 		else
 		{
 			self.val(initialElement.html().trim());
