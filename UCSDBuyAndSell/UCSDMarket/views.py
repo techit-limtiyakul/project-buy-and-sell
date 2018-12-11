@@ -375,9 +375,6 @@ def SearchListings(request):
 
     # return render(request, "UCSDMarket/search_listing.html", context)
 
-def search_form(request):
-    return render(request, 'UCSDMarket/search_form.html')
-
 def search(request):
     empty_query = True
 
