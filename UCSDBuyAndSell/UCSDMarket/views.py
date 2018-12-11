@@ -14,7 +14,9 @@ from UCSDBuyAndSell.tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from UCSDMarket.models import Picture, Listing, Favorite
-
+from django.db.models import Q
+from django.http import HttpResponse
+from decimal import Decimal
 
 # Create your views here.
 def Home(request):
@@ -96,14 +98,14 @@ def ListingPage(request):
                                         })
 
                 Favd = False
-                if Favorite.objects.filter(user=request.user, listingKey=ThisListing.id).exists():
+                if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=ThisListing.id).exists():
                     Favd = True
 
                 context = {
                     "id" : ThisListing.id,
                     "Title" : ThisListing.title,
                     "Seller" : ThisListing.user.username,
-                    "Price" : ThisListing.price,
+                    "Price" : ThisListing.Price,
                     "CanDeliver" : ThisListing.canDeliver,
                     "Condition" : ThisListing.condition,
                     "Description" : ThisListing.description,
@@ -133,7 +135,7 @@ def MyListings(request):
                 "id" : post.id,
                 "Title" : post.title,
                 "Seller" : post.user.username,
-                "Price" : post.price,
+                "Price" : post.Price,
                 "CanDeliver" : post.canDeliver,
                 "Condition" : post.condition,
                 "Description" : post.description,
@@ -168,7 +170,7 @@ def Favorites(request):
                 "id" : post.id,
                 "Title" : post.title,
                 "Seller" : post.user.username,
-                "Price" : post.price,
+                "Price" : post.Price,
                 "CanDeliver" : post.canDeliver,
                 "Condition" : post.condition,
                 "Description" : post.description,
@@ -239,7 +241,7 @@ def CreateListings(request):
                 newListing = Listing(
                 user = request.user,
                 title = request.POST['title'],
-                price = request.POST['price'],
+                Price = request.POST['Price'],
                 canDeliver = deliverable,
                 condition = request.POST['condition'],
                 description = request.POST['description'],
@@ -266,17 +268,129 @@ def CreateListings(request):
 
 
 def SearchListings(request):
-    query_string = ''
-    found_entries = None
-    posts = ""
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-        # entry_query = utils.get_query(query_string, ['title', 'body',])
-        # posts = Post.objects.filter(entry_query).order_by('created')
-        ResultListings = Listing.objects.filter(title=query_string)
+    template = "UCSDMarket/my_listings.html"
+    query = request.GET.get('q')
+    results = Listing.objects.filter(
+        Q(title__startswith='b') &~ Q(price__endswith='1'))
+    #a = Listing.objects.filter(results)
+    # print(results)
+    # print(request.path)
+    # print(request.get_full_path())
+    # print(request.META)
+
+
+
+    Listings = []
+
+    for post in results:
+        all_images = Picture.objects.filter(listingKey=post)
+        if not all_images:
+            thumbImg = static('img/NoImage.png')
+        else:
+            thumbImg = all_images[0].picture.url
+        Favd = False
+        if request.user.is_authenticated and Favorite.objects.filter(user=request.user, listingKey=post.id).exists():
+            Favd = True
+        Listings.append({
+            "id" : post.id,
+            "Title" : post.title,
+            "Seller" : post.user.username,
+            "Price" : post.Price,
+            "CanDeliver" : post.canDeliver,
+            "Condition" : post.condition,
+            "Description" : post.description,
+            "ContactInformation" : post.contactInformation,
+            "Thumbnail": thumbImg,
+            "Favd": Favd
+        })
+    return render(request, 'UCSDMarket/search_listing.html', { 'query_string': query, 'posts': Listings})
+
+    # context = {
+    #     "Title" : "Search and explore what you want!",
+    #     "Description" : "Please enter the information you would like to search.",
+    #     "Results" : "Here are the results."
+
+    # } #
+
+
+    # return render(request, "UCSDMarket/search_listing.html", context)
+
+def search_form(request):
+    return render(request, 'UCSDMarket/search_form.html')
+
+def search(request):
+    empty_query = True
+
+    title_words = ""
+    price_words = ""
+    canDeliver_words = True
+    condition = ""
+    description = ""
+
+    LowPrice = "NoLowPrice"
+    HighPrice = "NoHighPrice"
+
+    if 'q_lowprice' in request.GET:
+        lowprice_words = request.GET['q_lowprice']
+        if lowprice_words:
+            try:
+                float(lowprice_words)
+                LowPrice = lowprice_words
+                empty_query = False
+            except ValueError:
+                LowPrice = "NoLowPrice"
+    if 'q_highprice' in request.GET:
+        highprice_words = request.GET['q_highprice']
+        if highprice_words:
+            try:
+                float(highprice_words)
+                HighPrice = highprice_words
+                empty_query = False
+            except ValueError:
+                HighPrice = "NoHighPrice"
+
+    filters = {}
+
+    if 'q_title' in request.GET:
+        message = 'You searched for: %r' % request.GET['q_title']
+        title_words = request.GET['q_title']
+
+        if title_words:
+            empty_query = False
+            filters['title__contains'] = title_words
+
+
+    if 'q_canDeliver' in request.GET:
+        if request.GET['q_canDeliver'] == "on":
+            canDeliver_words = True
+            filters['canDeliver'] = True
+        else:
+            canDeliver_words = False
+
+    if 'q_condition' in request.GET:
+        condition = request.GET['q_condition']
+        if condition:
+            empty_query = False
+            filters['condition__contains'] = condition
+
+    if 'q_description' in request.GET:
+        description = request.GET['q_description']
+        if description:
+            empty_query = False
+            filters['description__contains'] = description
+  
+
+    if not empty_query:
+        listings = Listing.objects.filter(**filters)
+        print(listings)
+
+        if LowPrice != "NoLowPrice":
+            listings = listings.filter(Price__gt=Decimal(LowPrice))
+        if HighPrice != "NoHighPrice":
+            listings = listings.filter(Price__lt=Decimal(HighPrice))
         Listings = []
 
-        for post in ResultListings:
+        for post in listings:
             all_images = Picture.objects.filter(listingKey=post)
             if not all_images:
                 thumbImg = static('img/NoImage.png')
@@ -289,7 +403,7 @@ def SearchListings(request):
                 "id" : post.id,
                 "Title" : post.title,
                 "Seller" : post.user.username,
-                "Price" : post.price,
+                "Price" : post.Price,
                 "CanDeliver" : post.canDeliver,
                 "Condition" : post.condition,
                 "Description" : post.description,
@@ -297,19 +411,20 @@ def SearchListings(request):
                 "Thumbnail": thumbImg,
 				"Favd": Favd
             })
-        return render(request, 'UCSDMarket/search_listing.html', { 'query_string': query_string, 'posts': Listings})
-    else:
-        return render(request, 'UCSDMarket/search_listing.html', { 'query_string': 'Null', 'found_entries': 'Enter a search term' })
 
-    # context = {
-    #     "Title" : "Search and explore what you want!",
-    #     "Description" : "Please enter the information you would like to search.",
-    #     "Results" : "Here are the results."
-
-    # } #
+        context = {
+            "Listings" : Listings,
+        }    
 
 
-    # return render(request, "UCSDMarket/search_listing.html", context)
+        return render(request, 'UCSDMarket/search_results.html',
+                    {'posts': Listings, 'query': title_words})
+
+    # print("request.GET is ",request.GET)
+    if len(request.GET) == 0:
+        empty_query = False
+
+    return render(request, 'UCSDMarket/search_form.html', {'error': empty_query})
 
 def DeleteListing(request):
     if request.user.is_authenticated:

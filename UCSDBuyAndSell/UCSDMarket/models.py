@@ -13,7 +13,7 @@ class Listing(models.Model):
 	
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    price = models.CharField(max_length=20)
+    Price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     canDeliver = models.BooleanField() # true or false
     condition = models.CharField(max_length=10)
     description = models.CharField(max_length=500)
