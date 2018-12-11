@@ -112,7 +112,8 @@ def ListingPage(request):
                     "Description" : ThisListing.description,
                     "ContactInformation" : ThisListing.contactInformation,
                     "Pictures": all_pictures,
-                    "Favd": Favd
+                    "Favd": Favd,
+                    "isOwner": ThisListing.user == request.user
                 }
                 return render(request, "UCSDMarket/listing.html", context)
             else:
@@ -274,6 +275,10 @@ def EditListings(request):
 
             existingListing = Listing.objects.get(id=listingId)
 
+            if request.user != existingListing.user:
+                messages.error(request, 'User Not Authenticated')
+                return render(request, "UCSDMarket/home.html")
+                
             if request.POST.get('canDeliver', False):
                 canDeliver = True
             else:
